@@ -7,6 +7,7 @@ const STUN_TIME = 0.5
 var is_double_jump = false
 var stun_delay = 0
 var is_held: bool = false
+var interactive = null
 const PICKUP_DISTANCE = 100
 var crate: RigidBody2D = null
 const THROW_FORCE = 400
@@ -15,7 +16,9 @@ enum State {IDLE, RUN, JUMP, DOUBLE_JUMP, STUN}
 
 @onready var animation = get_node("AnimationPlayer")
 @onready var sprite = get_node("DudeSprite")
-
+@onready var step_player: AudioStreamPlayer = get_node("StepPlayer")
+@onready var jump_player: AudioStreamPlayer = get_node("JumpPlayer")
+var knockback_velocity = Vector2.ZERO
 
 signal hit
 
@@ -37,7 +40,7 @@ func _input(event: InputEvent) -> void:
 		var shape = CircleShape2D.new()
 		shape.radius = PICKUP_DISTANCE
 		query.shape = shape
-		query.collide_with_areas = false
+		query.collide_with_areas = true
 		query.transform = Transform2D(0, global_position)
 		query.exclude = [self]
 		var results = state.intersect_shape(query)
@@ -47,13 +50,19 @@ func _input(event: InputEvent) -> void:
 				crate = result.collider
 				crate.hold(self)
 				is_held = true
+			if result.collider is Area2D:
+				interactive = result.collider
 	
-	if event.is_action_released("pickup") and is_held:
-		var direction = Vector2.RIGHT if velocity.x >= 0 else Vector2.LEFT
-		direction.y = -0.5
-		crate.release(direction * THROW_FORCE)
-		crate = null
-		is_held = false
+	if event.is_action_released("pickup"):
+		if interactive and interactive.has_method("activate"):
+			interactive.activate()
+			interactive = null
+		elif is_held:
+			var direction = Vector2.RIGHT if velocity.x >= 0 else Vector2.LEFT
+			direction.y = -0.5
+			crate.release(direction * THROW_FORCE)
+			crate = null
+			is_held = false
 	
 func handle_held(delta):
 	if crate:
@@ -74,12 +83,17 @@ func handle_idle(delta):
 		
 	if Input.is_action_just_pressed("jump"):
 		velocity.y = JUMP_VELOCITY
+		if not jump_player.playing:
+			jump_player.play()
 		is_double_jump = true
 		set_state(State.JUMP)
 	
 
 func handle_run(delta):
 	animation.play("run")
+	if not step_player.playing:
+		step_player.play()
+		
 	
 	var direction = Input.get_axis("left", "right")
 
@@ -90,6 +104,8 @@ func handle_run(delta):
 		return
 		
 	if Input.is_action_just_pressed("jump"):
+		if not jump_player.playing:
+			jump_player.play()
 		velocity.y = JUMP_VELOCITY
 		is_double_jump = true
 		set_state(State.JUMP)
@@ -97,6 +113,7 @@ func handle_run(delta):
 
 func handle_jump(delta):
 	animation.play("jump")
+
 
 	if Input.is_action_just_pressed("jump") and is_double_jump:
 		velocity.y = JUMP_VELOCITY
@@ -109,7 +126,7 @@ func handle_jump(delta):
 
 func handle_double_jump(delta):
 	animation.play("double_jump")
-	
+
 	if velocity.y > 0:
 		set_state(State.JUMP)
 
@@ -119,6 +136,7 @@ func update_flip():
 	
 	
 func _physics_process(delta: float) -> void:
+	
 	match current_state:
 		State.IDLE:
 			handle_idle(delta)
@@ -130,6 +148,12 @@ func _physics_process(delta: float) -> void:
 			handle_double_jump(delta)
 		State.STUN:
 			handle_stun(delta)
+			
+	if knockback_velocity != Vector2.ZERO:
+		velocity = knockback_velocity
+		move_and_slide()
+		knockback_velocity = knockback_velocity.move_toward(Vector2.ZERO, delta * 1000)  # Плавное замедление
+		return
 
 	if not is_on_floor():
 		velocity.y += GRAVITY * delta
@@ -153,11 +177,15 @@ func handle_collisions(delta):
 		var collision = get_slide_collision(i)
 		var collider = collision.get_collider()
 		var normal = collision.get_normal()
+				
+		if "TrapHit" in collider.name:
+			var force = 2
+			velocity = normal * SPEED * force
+			set_state(State.JUMP)
 		if "StaticBox" in collider.name:
 			var force = 4
 			if normal.y < 0:
 				force = 2
-			hit.emit()
 			velocity = normal * SPEED * force
 			set_state(State.JUMP)
 		if "Wall" in collider.name:
@@ -190,3 +218,16 @@ func handle_stun(delta):
 		set_state(State.IDLE)
 	
 	stun_delay -= delta
+
+
+func player():
+	pass
+
+func apply_knockback(direction: Vector2):
+	if direction == Vector2.ZERO:
+		direction = Vector2(randf_range(-1, 1), randf_range(-1, 1)).normalized()
+	
+	knockback_velocity = direction * 400
+	
+func take_push(attack_direction):
+	apply_knockback(attack_direction)

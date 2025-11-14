@@ -1,0 +1,194 @@
+[gd_scene load_steps=13 format=3 uid="uid://bw7cc5mccbnmt"]
+
+[ext_resource type="Script" uid="uid://p6wwr42tqowg" path="res://scripts/trap.gd" id="1_aucmg"]
+[ext_resource type="Texture2D" uid="uid://b3mmi1sxqf5ah" path="res://assets/traps/fire_hit.png" id="2_tk2q1"]
+[ext_resource type="Texture2D" uid="uid://b3kg0rabdlmhp" path="res://assets/traps/fire_on.png" id="3_1sb0t"]
+[ext_resource type="Texture2D" uid="uid://c3728ych0cvjp" path="res://assets/texture.png" id="4_tk2q1"]
+
+[sub_resource type="Animation" id="Animation_7s8xa"]
+resource_name = "idle"
+loop_mode = 1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite2D:texture")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [ExtResource("2_tk2q1")]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Sprite2D:hframes")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [4]
+}
+
+[sub_resource type="Animation" id="Animation_btw44"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite2D:texture")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [ExtResource("2_tk2q1")]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Sprite2D:hframes")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [4]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("Sprite2D:frame")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [1]
+}
+
+[sub_resource type="Animation" id="Animation_jl22o"]
+resource_name = "fire"
+length = 0.3
+loop_mode = 1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite2D:texture")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [ExtResource("3_1sb0t")]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Sprite2D:hframes")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [3]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("Sprite2D:frame")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0, 0.13333334, 0.23333333),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [0, 1, 2]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_fp550"]
+_data = {
+&"RESET": SubResource("Animation_btw44"),
+&"fire": SubResource("Animation_jl22o"),
+&"idle": SubResource("Animation_7s8xa")
+}
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_1ywii"]
+size = Vector2(15, 16)
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_2uf36"]
+radius = 6.0
+height = 14.0
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_1sb0t"]
+particle_flag_disable_z = true
+emission_shape_scale = Vector3(10, 1, 1)
+emission_shape = 3
+emission_box_extents = Vector3(1, 1, 1)
+gravity = Vector3(0, -50, 0)
+scale_min = 0.19999999
+scale_max = 0.39999998
+color = Color(0, 0, 0, 1)
+turbulence_enabled = true
+turbulence_noise_strength = 2.32
+turbulence_noise_scale = 0.0
+turbulence_noise_speed_random = 0.75
+turbulence_influence_max = 0.19600001
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_tk2q1"]
+size = Vector2(15.2, 2.4000006)
+
+[node name="Trap" type="StaticBody2D"]
+scale = Vector2(2.5, 2.5)
+script = ExtResource("1_aucmg")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+libraries = {
+&"": SubResource("AnimationLibrary_fp550")
+}
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("2_tk2q1")
+hframes = 4
+frame = 1
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(0, 8)
+shape = SubResource("RectangleShape2D_1ywii")
+
+[node name="Hit" type="Area2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Hit"]
+position = Vector2(0, -7)
+shape = SubResource("CapsuleShape2D_2uf36")
+
+[node name="GPUParticles2D" type="GPUParticles2D" parent="."]
+modulate = Color(1, 1, 1, 0.18039216)
+position = Vector2(0, -5)
+emitting = false
+amount = 11
+amount_ratio = 0.8
+texture = ExtResource("4_tk2q1")
+lifetime = 7.0
+speed_scale = 2.6
+randomness = 0.4
+visibility_rect = Rect2(-50, -240, 100, 250)
+trail_lifetime = 0.8
+process_material = SubResource("ParticleProcessMaterial_1sb0t")
+
+[node name="TouchFire" type="Area2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="TouchFire"]
+position = Vector2(9.536741e-07, -0.39999995)
+scale = Vector2(0.99999976, 0.99999976)
+shape = SubResource("RectangleShape2D_tk2q1")
+
+[connection signal="body_entered" from="Hit" to="." method="_on_hit_body_entered"]
+[connection signal="body_entered" from="TouchFire" to="." method="_on_touch_fire_body_entered"]

@@ -1,0 +1,7 @@
+[gd_resource type="Theme" load_steps=2 format=3 uid="uid://bcuk6s8r6tipi"]
+
+[ext_resource type="FontFile" uid="uid://dab4fllssdffx" path="res://fonts/font.ttf" id="1_is4b8"]
+
+[resource]
+default_font = ExtResource("1_is4b8")
+default_font_size = 40
