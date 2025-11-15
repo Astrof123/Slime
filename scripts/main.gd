@@ -21,10 +21,27 @@ func _ready() -> void:
 	#audio_player.volume_db = linear_to_db(0.5)
 	audio_player.play()
 	dude.hit.connect(_on_hit_static_box)
-	
+	load_settings()
 	#Global.pause()
+
 
 func _on_hit_static_box():
 	staticbox_animation.play("hit")
 	
 	
+func save_settings():
+	var config = ConfigFile.new()
+	var slider: HSlider = menu.get_node("CenterContainer/VBoxContainer/HBoxContainer/HSlider")
+	config.set_value("audio", "volume", slider.value)
+	config.save("user://dude.cfg")
+	
+
+func load_settings():
+	var config = ConfigFile.new()
+	
+	var error = config.load("user://dude/cfg")
+	
+	if error == OK:
+		var slider: HSlider = menu.get_node("CenterContainer/VBoxContainer/HBoxContainer/HSlider")
+		var volume = config.get_value("audio", "volume", 0.8)
+		slider.value = volume

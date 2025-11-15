@@ -246,3 +246,5 @@ position = Vector2(204, 472)
 
 [node name="Trap" parent="." instance=ExtResource("12_eb6dy")]
 position = Vector2(494, 538.00006)
+
+[connection signal="tree_exiting" from="." to="." method="save_settings"]
