@@ -20,6 +20,8 @@ enum State {IDLE, RUN, JUMP, DOUBLE_JUMP, STUN}
 @onready var jump_player: AudioStreamPlayer = get_node("JumpPlayer")
 var knockback_velocity = Vector2.ZERO
 
+var isSlippery = false
+
 signal hit
 
 
@@ -78,8 +80,11 @@ func handle_idle(delta):
 		velocity.x = direction * SPEED
 		set_state(State.RUN)
 	else:
-		velocity.x = 0
-		#velocity.x = move_toward(velocity.x, 0, SPEED / 40)
+		if isSlippery:
+			velocity.x = move_toward(velocity.x, 0, SPEED / 30)
+			$Slippery.start()
+		else:
+			velocity.x = 0
 		
 	if Input.is_action_just_pressed("jump"):
 		velocity.y = JUMP_VELOCITY
@@ -87,6 +92,7 @@ func handle_idle(delta):
 			jump_player.play()
 		is_double_jump = true
 		set_state(State.JUMP)
+
 	
 
 func handle_run(delta):
@@ -231,3 +237,7 @@ func apply_knockback(direction: Vector2):
 	
 func take_push(attack_direction):
 	apply_knockback(attack_direction)
+
+
+func _on_slippery_timeout() -> void:
+	isSlippery = false

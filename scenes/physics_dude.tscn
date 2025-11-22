@@ -248,3 +248,8 @@ stream = ExtResource("7_rhgci")
 bus = &"SFX"
 
 [node name="Camera2D" type="Camera2D" parent="."]
+
+[node name="Slippery" type="Timer" parent="."]
+wait_time = 0.3
+
+[connection signal="timeout" from="Slippery" to="." method="_on_slippery_timeout"]

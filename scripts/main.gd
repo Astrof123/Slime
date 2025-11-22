@@ -49,6 +49,8 @@ func load_level(name):
 			camera.limit_left = 0
 			camera.limit_bottom = 648
 			camera.limit_top = 0
+			current_level.camera = camera
+			current_level.player = player
 	
 	
 func save_settings():

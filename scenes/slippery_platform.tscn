@@ -1,0 +1,28 @@
+[gd_scene load_steps=5 format=3 uid="uid://ch7ygjb73siob"]
+
+[ext_resource type="Texture2D" uid="uid://cgb7b4217udf1" path="res://assets/terrain.png" id="1_t44wa"]
+[ext_resource type="Script" uid="uid://b8gbvlqdjt2gq" path="res://scripts/slippery_platform.gd" id="2_xf2h0"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_b84aa"]
+size = Vector2(48, 1)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_t44wa"]
+size = Vector2(48, 4)
+
+[node name="SlipperyPlatform" type="StaticBody2D"]
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("1_t44wa")
+region_enabled = true
+region_rect = Rect2(272, 0, 48, 16)
+
+[node name="Area2D" type="Area2D" parent="."]
+script = ExtResource("2_xf2h0")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
+position = Vector2(0, -7.5)
+shape = SubResource("RectangleShape2D_b84aa")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(0, -5)
+shape = SubResource("RectangleShape2D_t44wa")

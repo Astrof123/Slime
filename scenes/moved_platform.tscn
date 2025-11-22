@@ -1,0 +1,88 @@
+[gd_scene load_steps=7 format=3 uid="uid://crkc1g3p2l2jj"]
+
+[ext_resource type="Script" uid="uid://ch5ont0g3ifr4" path="res://scripts/moved_platform.gd" id="1_4cvhp"]
+[ext_resource type="Texture2D" uid="uid://cgb7b4217udf1" path="res://assets/terrain.png" id="2_rmv8h"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_xlech"]
+size = Vector2(48, 8)
+
+[sub_resource type="Animation" id="Animation_rmv8h"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("CollisionShape2D:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(-48, -4)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Sprite2D:position")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(-48, 0)]
+}
+
+[sub_resource type="Animation" id="Animation_4cvhp"]
+resource_name = "moving"
+length = 2.0
+loop_mode = 1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("CollisionShape2D:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 1, 2),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [Vector2(-48, -4), Vector2(0, -4), Vector2(-48, -4)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Sprite2D:position")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 1, 2),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [Vector2(-48, 0), Vector2(0, 0), Vector2(-48, 0)]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_vntbr"]
+_data = {
+&"RESET": SubResource("Animation_rmv8h"),
+&"moving": SubResource("Animation_4cvhp")
+}
+
+[node name="MovedPlatform" type="StaticBody2D"]
+position = Vector2(24, 0)
+script = ExtResource("1_4cvhp")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+position = Vector2(-48, 0)
+texture = ExtResource("2_rmv8h")
+region_enabled = true
+region_rect = Rect2(272, 32, 48, 16)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(-48, -4)
+shape = SubResource("RectangleShape2D_xlech")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+libraries = {
+&"": SubResource("AnimationLibrary_vntbr")
+}

@@ -1,8 +1,11 @@
-[gd_scene load_steps=8 format=3 uid="uid://quu33wsc1qml"]
+[gd_scene load_steps=11 format=3 uid="uid://quu33wsc1qml"]
 
 [ext_resource type="Script" uid="uid://ccf7eowv6f85p" path="res://scripts/infinity.gd" id="1_qs627"]
 [ext_resource type="AudioStream" uid="uid://decg16iayc54a" path="res://audio/background_2.ogg" id="1_tx38h"]
+[ext_resource type="PackedScene" uid="uid://ln7f1jsd6aig" path="res://scenes/platform.tscn" id="2_fwbj7"]
 [ext_resource type="Texture2D" uid="uid://dy6rf3t4d4dxd" path="res://assets/parallax/parallax-mountain-bg.png" id="3_3irr2"]
+[ext_resource type="PackedScene" uid="uid://crkc1g3p2l2jj" path="res://scenes/moved_platform.tscn" id="3_iuas0"]
+[ext_resource type="PackedScene" uid="uid://ch7ygjb73siob" path="res://scenes/slippery_platform.tscn" id="4_486t8"]
 [ext_resource type="Texture2D" uid="uid://c73s0jgnxlksg" path="res://assets/parallax/parallax-mountain-montain-far.png" id="4_fwbj7"]
 [ext_resource type="Texture2D" uid="uid://di5uftgri0ttj" path="res://assets/parallax/parallax-mountain-mountains.png" id="5_iuas0"]
 [ext_resource type="Texture2D" uid="uid://ce4xduhk0fjt3" path="res://assets/parallax/parallax-mountain-trees.png" id="6_486t8"]
@@ -10,6 +13,9 @@
 
 [node name="Infinity" type="Node2D"]
 script = ExtResource("1_qs627")
+platform_scene = ExtResource("2_fwbj7")
+moved_platform_scene = ExtResource("3_iuas0")
+slippery_platform_scene = ExtResource("4_486t8")
 
 [node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
 stream = ExtResource("1_tx38h")
@@ -66,3 +72,5 @@ repeat_times = 3
 position = Vector2(576, 324)
 scale = Vector2(2.1176472, 4.05)
 texture = ExtResource("7_ckynt")
+
+[node name="Platforms" type="Node2D" parent="."]

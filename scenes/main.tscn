@@ -9,7 +9,7 @@ script = ExtResource("1_sugp2")
 
 [node name="World" type="Node2D" parent="."]
 
-[node name="UI" type="Node2D" parent="."]
+[node name="UI" type="CanvasLayer" parent="."]
 
 [node name="Hud" parent="UI" instance=ExtResource("2_trceg")]
 
