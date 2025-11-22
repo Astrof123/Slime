@@ -1,9 +1,18 @@
 extends Node2D
 
-@onready var staticbox_animation = get_node("Static/StaticBox/AnimationPlayer")
-@onready var dude = get_node("PhysicsDude")
-@onready var audio_player: AudioStreamPlayer = get_node("AudioStreamPlayer")
-@onready var menu = $Menu
+var current_level: Node2D = null
+var levels: Dictionary = {
+	"Training": preload("res://scenes/training_level.tscn"),
+	"Infinity": preload("res://scenes/infinity.tscn")
+}
+
+var player = null
+var camera = null
+@onready var player_scene = preload("res://scenes/physics_dude.tscn")
+@onready var world = $World
+
+
+@onready var menu = $UI/Menu
 
 func _input(event: InputEvent) -> void:
 	if event.is_action_pressed("pause"):
@@ -17,16 +26,29 @@ func _input(event: InputEvent) -> void:
 
 
 func _ready() -> void:
-	#audio_player.stream = load("res://audio/background.ogg")
-	#audio_player.volume_db = linear_to_db(0.5)
-	audio_player.play()
-	dude.hit.connect(_on_hit_static_box)
+	player = player_scene.instantiate()
+	camera = player.get_node("Camera2D")
+	world.add_child(player)
+	menu.update_levels(levels.keys())
+	load_level(levels.keys()[0])
+	menu.level_changed.connect(load_level)
 	load_settings()
-	#Global.pause()
 
 
-func _on_hit_static_box():
-	staticbox_animation.play("hit")
+func load_level(name):
+	if current_level:
+		current_level.queue_free()
+	current_level = levels[name].instantiate()
+	player.global_position = current_level.get_node("Spawn").global_position
+	world.add_child(current_level)
+	match name:
+		"Training": 
+			camera.enabled = false
+		"Infinity": 
+			camera.enabled = true
+			camera.limit_left = 0
+			camera.limit_bottom = 648
+			camera.limit_top = 0
 	
 	
 func save_settings():

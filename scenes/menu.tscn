@@ -47,6 +47,17 @@ size_flags_vertical = 4
 max_value = 1.0
 step = 0.1
 
+[node name="Label2" type="Label" parent="CenterContainer/VBoxContainer"]
+layout_mode = 2
+theme = ExtResource("2_con2f")
+text = "Levels"
+horizontal_alignment = 1
+
+[node name="OptionButton" type="OptionButton" parent="CenterContainer/VBoxContainer"]
+layout_mode = 2
+theme = ExtResource("2_con2f")
+
 [connection signal="pressed" from="CenterContainer/VBoxContainer/ResumeButton" to="." method="_on_resume_button_pressed"]
 [connection signal="pressed" from="CenterContainer/VBoxContainer/ExitButton" to="." method="_on_exit_button_pressed"]
 [connection signal="value_changed" from="CenterContainer/VBoxContainer/HBoxContainer/HSlider" to="." method="_on_h_slider_value_changed"]
+[connection signal="item_selected" from="CenterContainer/VBoxContainer/OptionButton" to="." method="on_level_changed"]

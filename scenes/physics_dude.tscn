@@ -218,6 +218,7 @@ radius = 19.0
 height = 48.0
 
 [node name="PhysicsDude" type="CharacterBody2D"]
+z_index = 4096
 script = ExtResource("1_uy56r")
 
 [node name="DudeSprite" type="Sprite2D" parent="."]
@@ -245,3 +246,5 @@ bus = &"SFX"
 [node name="JumpPlayer" type="AudioStreamPlayer" parent="."]
 stream = ExtResource("7_rhgci")
 bus = &"SFX"
+
+[node name="Camera2D" type="Camera2D" parent="."]
